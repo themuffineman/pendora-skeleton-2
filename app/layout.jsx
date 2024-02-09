@@ -2,9 +2,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import {RegisterLink, LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
-
-
-
+import {LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
+import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,14 +13,30 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
+
+  const { isAuthenticated, getUser } = getKindeServerSession();
+  const authenticated = await isAuthenticated();
+  const User = await getUser();
+
   return (
     <html lang="en">
         <body className={inter.className}>
           <nav className="flex justify-between items-center bg-slate-300 p-4 ">
               <h1 className="text-xl font-bold tracking-tighter cursor-pointer"><Link href="/">Pendora 2.0 🧁</Link></h1>
               <div className="flex gap-4">
-                <LoginLink className="p-2 rounded bg-slate-950 text-white">Sign in</LoginLink>
-                <RegisterLink className="p-2 rounded bg-slate-950 text-white">Sign up</RegisterLink>
+                {
+                  User? 
+                  (
+                    <LogoutLink postLogoutRedirectURL="/" className="p-2 rounded bg-slate-950 text-white">Log out</LogoutLink>
+                  )
+                  :
+                  (
+                    <>
+                      <LoginLink className="p-2 rounded bg-slate-950 text-white">Sign in</LoginLink>
+                      <RegisterLink className="p-2 rounded bg-slate-950 text-white">Sign up</RegisterLink>
+                    </>
+                  )
+                }
               </div>
           </nav>
           <main className="flex min-h-screen flex-col min-w-screen items-center  p-24">
