@@ -3,18 +3,27 @@ import React from "react";
 
 export default function Home() {
   const body = {
-    "name": "Petrus",
-    "email": "petrusheya@gmail.com"
+    name: "Shigwedha",
+    email: "petrusheyashigwedha@gmail.com"
   }
   console.log("hello")
 
-  fetch('http://localhost:3000/api/users', { method: 'POST', body: body })
-  .then((res) => {
-    console.log(res); // Response object received from the server
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+  async function fetchData() {
+    try {
+      const response = await fetch('http://localhost:3000/api/users', {method: "POST", body: JSON.stringify(body)});
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+      const data = await response.json();
+      console.log(data.hello); 
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+  
+  // Call the function to fetch data
+  fetchData();
+  
 
 
   return (
